@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0e1111" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="JejakRun — GPS running tracker untuk lari harian. Catat jarak, durasi, pace, rute, dan progres lari di ponsel." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="JejakRun" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzxI9qOZeZRZCSf9d9N2PE6Nw0=" crossorigin="" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+  <script src="./app.js" defer></script>
+  <title>JejakRun — Temukan Ritmemu</title>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#beranda" data-link="beranda" aria-label="JejakRun - Beranda">
+        <span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M7 27 17 12l7 8 9-13" stroke="currentColor" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 33h23" stroke="currentColor" stroke-width="4.4" stroke-linecap="round"/></svg></span>
+        <span>JEJAK<span>RUN</span><small>RUNNING CLUB / 001</small></span>
+      </a>
+      <div class="side-section-label">MENU UTAMA</div>
+      <nav aria-label="Navigasi utama" class="side-nav">
+        <button class="nav-item selected" data-page="beranda"><i data-icon="home"></i><span>Beranda</span><span class="nav-arrow">↗</span></button>
+        <button class="nav-item" data-page="lari"><i data-icon="run"></i><span>Mulai Lari</span><span class="nav-arrow">↗</span></button>
+        <button class="nav-item" data-page="riwayat"><i data-icon="calendar"></i><span>Riwayat</span><span class="nav-arrow">↗</span></button>
+        <button class="nav-item" data-page="statistik"><i data-icon="chart"></i><span>Statistik</span><span class="nav-arrow">↗</span></button>
+      </nav>
+      <div class="side-spacer"></div>
+      <div class="challenge-card">
+        <div class="challenge-orb"><i data-icon="target"></i></div>
+        <span class="overline">TARGET MINGGUAN</span>
+        <strong><span id="side-week-km">0.0</span> <small>/ <span class="goal-label">20</span> km</small></strong>
+        <div class="progress-track"><div class="progress-fill" id="side-week-progress" style="width:0%"></div></div>
+        <span class="muted tiny">Sedikit demi sedikit, jadi jauh.</span>
+      </div>
+      <p class="sidebar-footer">DIBUAT UNTUK SETIAP LANGKAH.<br>JEJAKRUN © 2026</p>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left"><span class="live-dot"></span><span>JEJAKRUN STUDIO</span><span class="topbar-divider">/</span><strong id="top-page-name">Beranda</strong></div>
+        <div class="topbar-right"><span class="local-badge"><i data-icon="shield"></i> Data tersimpan di perangkat</span><button class="icon-btn" id="install-btn" aria-label="Pasang aplikasi" title="Pasang di layar utama" hidden><i data-icon="download"></i></button></div>
+      </header>
+
+      <div class="page" id="page-beranda">
+        <section class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="eyebrow-line"></span> RUN YOUR OWN RACE <span class="eyebrow-number">001—026</span></div>
+            <h1>Setiap langkah<br><em>punya cerita.</em></h1>
+            <p>Lari bukan tentang seberapa cepat kamu sampai. Tapi seberapa jauh kamu terus melangkah.</p>
+            <div class="hero-actions"><button class="btn btn-accent" data-action="go-run">Mulai berlari <i data-icon="arrow-up-right"></i></button><span class="hero-note"><i data-icon="location"></i> Lacak dengan GPS</span></div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="art-rings ring-one"></div><div class="art-rings ring-two"></div><div class="art-rings ring-three"></div>
+            <svg viewBox="0 0 520 400" preserveAspectRatio="xMidYMid meet" class="hero-route"><path d="M80 343 C105 285 105 269 162 289 S232 326 265 264 S258 181 334 161 S399 117 446 45"/><circle cx="80" cy="343" r="9"/><circle cx="446" cy="45" r="11"/></svg>
+            <div class="art-number">42<span>.</span>195</div><div class="art-caption">KILOMETER OF POSSIBILITY</div>
+            <div class="art-coordinate">00°55' S / 100°22' E</div>
+          </div>
+        </section>
+        <div class="section-heading metrics-title"><div><div class="overline">RINGKASAN PERJALANAN</div><h2>Progresmu sejauh ini<span class="punct">.</span></h2></div><span class="tag-outline">SEMUA WAKTU</span></div>
+        <section class="metric-grid">
+          <article class="metric-card"><div class="metric-top"><span>TOTAL JARAK</span><i data-icon="route"></i></div><div class="metric-value"><span id="total-km">0.00</span><small>km</small></div><div class="metric-bottom">Kilometer yang sudah ditempuh <span>↗</span></div></article>
+          <article class="metric-card"><div class="metric-top"><span>TOTAL AKTIVITAS</span><i data-icon="shoe"></i></div><div class="metric-value"><span id="total-runs">0</span><small>lari</small></div><div class="metric-bottom">Sesi lari yang tersimpan <span>↗</span></div></article>
+          <article class="metric-card"><div class="metric-top"><span>RATA-RATA PACE</span><i data-icon="timer"></i></div><div class="metric-value"><span id="avg-pace">--:--</span><small>/km</small></div><div class="metric-bottom">Menit per kilometer <span>↗</span></div></article>
+        </section>
+        <div class="home-grid">
+          <section class="panel chart-panel"><div class="panel-header"><div><span class="overline">THIS WEEK</span><h3>7 hari terakhir</h3></div><span class="small-pill"><span class="pill-dot"></span> JARAK / KM</span></div><div class="bar-chart" id="home-chart"></div><div class="chart-footer"><span>Akumulasi jarak harian</span><strong id="home-week-total">0.00 km</strong></div></section>
+          <section class="panel latest-panel"><div class="panel-header"><div><span class="overline">KEEP MOVING</span><h3>Aktivitas terbaru</h3></div><button class="link-btn" data-action="history">Lihat semua <i data-icon="arrow-up-right"></i></button></div><div id="recent-list" class="activity-list"></div></section>
+        </div>
+      </div>
+
+      <div class="page hidden" id="page-lari">
+        <div class="inner-header"><div><div class="eyebrow"><span class="eyebrow-line"></span> LIVE TRACKING</div><h1 class="page-title">Saatnya bergerak<span class="punct">.</span></h1><p class="page-subtitle">Nyalakan GPS, temukan ritme, biarkan langkahmu berbicara.</p></div><div class="gps-status" id="gps-status"><span class="status-dot"></span><span>GPS belum aktif</span></div></div>
+        <div class="tracker-grid">
+          <section class="tracker-left">
+            <div class="tracker-meter panel">
+              <div class="distance-label">JARAK TEMPUH <span class="metric-timestamp" id="tracker-clock">READY TO RUN</span></div>
+              <div class="distance-main"><span id="live-distance">0.00</span><small>KM</small></div>
+              <div class="tracker-stats"><div><span>DURASI</span><strong id="live-time">00:00:00</strong></div><div><span>PACE RATA-RATA</span><strong id="live-pace">--:-- <small>/km</small></strong></div><div><span>KECEPATAN</span><strong id="live-speed">0.0 <small>km/j</small></strong></div></div>
+            </div>
+            <div class="tracker-actions panel">
+              <div class="panel-header"><div><span class="overline">CONTROL CENTER</span><h3>Kontrol lari</h3></div><span id="session-state" class="small-pill">SIAP MULAI</span></div>
+              <div class="action-line"><button class="btn btn-accent huge" id="btn-start"><i data-icon="play"></i> MULAI LARI</button><button class="btn btn-outline huge hidden" id="btn-pause"><i data-icon="pause"></i> JEDA</button><button class="btn btn-accent huge hidden" id="btn-resume"><i data-icon="play"></i> LANJUTKAN</button><button class="btn btn-soft huge hidden" id="btn-finish"><i data-icon="flag"></i> SELESAI</button></div>
+              <p class="track-help" id="track-help"><i data-icon="info"></i> Izinkan akses lokasi saat diminta. Untuk hasil terbaik, gunakan di luar ruangan dengan layar tetap menyala.</p>
+              <div class="accuracy-line"><span>AKURASI GPS</span><strong id="gps-accuracy">—</strong></div>
+            </div>
+            <div class="tip-panel"><i data-icon="sun"></i><div><strong>Tips pelacakan akurat</strong><p>Aktifkan lokasi presisi. Browser di HP dapat menghentikan GPS saat layar terkunci—lebih aman menjaga layar tetap menyala selama berlari.</p></div></div>
+          </section>
+          <section class="map-wrapper panel">
+            <div class="map-top"><div><span class="overline">YOUR TRACK</span><h3>Rute perjalanan</h3></div><button class="round-control" id="btn-recenter" title="Fokus ke lokasi saya" aria-label="Fokus ke lokasi saya"><i data-icon="crosshair"></i></button></div>
+            <div class="map-frame"><div id="live-map" class="map-canvas"></div><div class="map-empty" id="map-empty"><div class="radar-pulse"><i data-icon="location"></i></div><strong>Petualangan dimulai di sini</strong><p>Peta akan mengikuti lokasimu setelah GPS aktif.</p></div><span class="map-attribution-helper" id="map-error" hidden>Peta gagal dimuat. Pelacakan GPS tetap dapat berjalan.</span></div>
+            <div class="map-foot"><div><span class="map-foot-dot"></span> <span id="map-foot-label">Menunggu GPS</span></div><span>OPENSTREETMAP</span></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="page hidden" id="page-riwayat">
+        <div class="inner-header"><div><div class="eyebrow"><span class="eyebrow-line"></span> THE ARCHIVE</div><h1 class="page-title">Jejak perjalanan<span class="punct">.</span></h1><p class="page-subtitle">Setiap sesi adalah bukti kamu terus maju.</p></div><button class="btn btn-outline export-btn" id="export-all"><i data-icon="download"></i> EKSPOR DATA</button></div>
+        <div class="panel history-panel"><div class="panel-header"><div><span class="overline">YOUR JOURNAL</span><h3>Semua aktivitas</h3></div><span class="small-pill" id="history-count">0 AKTIVITAS</span></div><div id="history-list" class="activity-list history-list"></div></div>
+      </div>
+
+      <div class="page hidden" id="page-statistik">
+        <div class="inner-header"><div><div class="eyebrow"><span class="eyebrow-line"></span> PROGRESS REPORT</div><h1 class="page-title">Angka yang bercerita<span class="punct">.</span></h1><p class="page-subtitle">Lihat konsistensimu dan rayakan setiap kemajuan.</p></div></div>
+        <section class="stat-grid"><div class="stat-block"><div>TOTAL KM</div><strong id="stat-km">0.00</strong><span>km sepanjang waktu</span></div><div class="stat-block"><div>TOTAL WAKTU</div><strong id="stat-hours">0j 0m</strong><span>durasi aktif</span></div><div class="stat-block"><div>LARI TERJAUH</div><strong id="stat-longest">0.00</strong><span>kilometer</span></div><div class="stat-block"><div>JUMLAH LARI</div><strong id="stat-count">0</strong><span>sesi selesai</span></div></section>
+        <div class="stats-grid"><section class="panel chart-panel"><div class="panel-header"><div><span class="overline">WEEKLY PERFORMANCE</span><h3>Jarak 7 hari terakhir</h3></div><span class="small-pill">KM</span></div><div class="bar-chart" id="stats-chart"></div><div class="chart-footer"><span>Total minggu ini</span><strong id="stats-week-total">0.00 km</strong></div></section><section class="panel goal-panel"><div class="panel-header"><div><span class="overline">YOUR COMMITMENT</span><h3>Target mingguan</h3></div><i data-icon="target"></i></div><div class="goal-headline"><strong id="goal-progress-text">0%</strong><span>TERCAPAI</span></div><div class="progress-track large"><div class="progress-fill" id="stat-progress" style="width:0%"></div></div><p class="goal-description" id="goal-description">0.0 dari 20 km minggu ini</p><label class="input-label" for="goal-input">TARGET MINGGUAN (KM)</label><div class="goal-edit"><input id="goal-input" type="number" inputmode="decimal" min="1" max="500" step="1" value="20"/><button class="btn btn-accent" id="save-goal">Simpan</button></div><div class="goal-note"><i data-icon="lock"></i> Semua data hanya disimpan di browser HP ini.</div></section></div>
+      </div>
+      <footer class="main-footer"><span>JEJAKRUN™ — TEMUKAN RITMEMU.</span><span>BUKAN TENTANG CEPAT. TENTANG BERGERAK.</span></footer>
+    </main>
+    <nav class="mobile-nav" aria-label="Navigasi bawah"><button class="mobile-nav-item active" data-page="beranda"><i data-icon="home"></i><span>Beranda</span></button><button class="mobile-nav-item" data-page="lari"><i data-icon="run"></i><span>Lari</span></button><button class="mobile-nav-item" data-page="riwayat"><i data-icon="calendar"></i><span>Riwayat</span></button><button class="mobile-nav-item" data-page="statistik"><i data-icon="chart"></i><span>Statistik</span></button></nav>
+  </div>
+  <div class="modal-root hidden" id="modal-root" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-shade" data-close-modal></div><div class="modal-card"><button class="modal-close" data-close-modal aria-label="Tutup detail"><i data-icon="x"></i></button><div id="modal-body"></div></div></div>
+  <div class="toast-container" id="toast-container" role="status" aria-live="polite"></div>
+  <noscript><p style="padding:24px;color:white;background:#151717;position:fixed;inset:0;z-index:999">JejakRun membutuhkan JavaScript untuk mengakses GPS dan mencatat lari.</p></noscript>
+</body></html>

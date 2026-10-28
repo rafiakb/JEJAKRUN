@@ -1,44 +1,76 @@
-# JEJAKRUN — Web GPS Running Tracker
+JejakRun — GPS Running Tracker
+JejakRun adalah aplikasi web pelacak lari yang responsif dan bisa dipasang ke layar utama HP sebagai Progressive Web App (PWA). Aplikasi ini membantu mencatat jarak, durasi, pace, rute perjalanan, dan perkembangan lari menggunakan GPS perangkat.
 
-Aplikasi web responsif / PWA yang bisa dibuka langsung melalui Chrome Android, dipasang di layar utama, dan digunakan tanpa database/server backend.
+Website: https://jejakrun-website.vercel.app
+Source code: https://github.com/rafiakb/JEJAKRUN
+Pembaruan dokumentasi: 28 Oktober 2026
+Fitur utama
+- GPS tracking: Menghitung jarak dari lokasi perangkat melalui Geolocation API, dengan penyaringan titik berakurasi rendah dan lonjakan posisi.
+- Statistik langsung: Jarak (km), durasi lari aktif, pace rata-rata (menit/km), dan kecepatan rata-rata.
+- Kontrol sesi: Mulai, jeda, lanjutkan, serta selesaikan lari. Sesi yang tersimpan sementara dapat dipulihkan dalam keadaan dijeda setelah halaman dimuat ulang.
+- Peta rute: Visualisasi jalur menggunakan Leaflet dan OpenStreetMap.
+- Riwayat aktivitas: Lihat aktivitas sebelumnya beserta ringkasan dan peta, hapus aktivitas, serta ekspor rute ke GPX.
+- Progres mingguan: Grafik jarak 7 hari terakhir dan target kilometer mingguan yang bisa diubah.
+- Ekspor data: Cadangkan seluruh riwayat sebagai file JSON dan bagikan ringkasan aktivitas.
+- PWA responsif: Tampilan nyaman di Android dan desktop, dengan kemampuan memasang ikon aplikasi ke layar utama pada browser yang mendukung.
+Teknologi
+Teknologi	Penggunaan
+HTML, CSS, JavaScript	Antarmuka dan logika aplikasi
+Geolocation API	Pengambilan koordinat GPS
+Leaflet + OpenStreetMap	Peta dan visualisasi rute
+localStorage	Penyimpanan riwayat di browser
+Web App Manifest + Service Worker	Dukungan instalasi PWA dan aset antarmuka dasar
+GitHub	Repository dan pengelolaan kode
+Vercel	Hosting HTTPS
 
-## Fitur
-- GPS `navigator.geolocation.watchPosition()` berakurasi tinggi.
-- Jarak dari koordinat GPS dengan Haversine; mengabaikan titik dengan akurasi >55 m, pergerakan sangat kecil, dan lonjakan >8,5 m/detik.
-- Durasi lari aktif, pace rata-rata, kecepatan rata-rata.
-- Jeda / lanjutkan / selesai dan pemulihan sesi jeda setelah reload.
-- Peta rute OpenStreetMap (Leaflet), titik lokasi, auto-follow.
-- Riwayat aktivitas dan detail peta, hapus, ekspor GPX, berbagi ringkasan.
-- Grafik 7 hari, target mingguan, ekspor seluruh riwayat ke JSON.
-- UI responsif untuk HP/desktop, PWA + service worker untuk antarmuka offline.
 
-## PENTING: Persyaratan GPS
-1. **Harus dibuka melalui HTTPS** (misalnya setelah hosting di Vercel/Netlify/GitHub Pages). `http://localhost` juga diizinkan untuk pengujian pada laptop; `http://192.168.1.x` biasanya **tidak**.
-2. Aktifkan GPS perangkat, izinkan lokasi presisi di browser dan beri izin saat diminta.
-3. **Pelacakan browser tidak dijamin berlanjut ketika layar terkunci, aplikasi ditutup, atau Android menghemat baterai.** Untuk lari serius gunakan aplikasi Android native. Aplikasi mencoba Screen Wake Lock pada browser kompatibel untuk menjaga layar hidup.
-4. Akurasi dipengaruhi GPS, sinyal, gedung, pohon, dan Android. Jangan gunakan untuk situasi keselamatan/medis.
-5. OpenStreetMap memerlukan koneksi internet untuk **memuat peta**. Statistik aktivitas dan riwayat tersimpan lokal.
-6. Data hanya ada di browser/perangkat tempat dipakai (`localStorage`). Tidak ada akun maupun sinkronisasi cloud. Jangan hapus data situs tanpa ekspor data terlebih dulu.
+Cara menggunakan di HP
+1. Buka https://jejakrun-website.vercel.app di Chrome Android.
+2. Aktifkan lokasi/GPS dan izinkan akses lokasi untuk situs tersebut.
+3. Pilih Mulai Lari, kemudian berjalan atau berlari di area terbuka.
+4. Gunakan Jeda atau Lanjutkan jika diperlukan, lalu pilih Selesai untuk menyimpan aktivitas.
+5. Buka menu Riwayat dan Statistik untuk melihat hasilnya.
+6. Jika tersedia, pilih menu Chrome ⋮ → Tambahkan ke layar utama / Instal aplikasi.
+Saran: Untuk pelacakan GPS selama lari, usahakan layar tetap menyala. Browser dapat menghentikan pembaruan lokasi ketika layar terkunci atau aplikasi berada di latar belakang.
+Menjalankan proyek secara lokal
+1. Clone repository menggunakan git clone https://github.com/rafiakb/JEJAKRUN.git atau unduh source code.
+2. Buka folder JEJAKRUN di VS Code.
+3. Jalankan server lokal, misalnya melalui terminal:
+   python -m http.server 8000
+4. Buka http://localhost:8000 di browser laptop.
+Akses GPS pada website memerlukan HTTPS atau localhost yang dianggap aman oleh browser. Membuka file index.html langsung atau memakai alamat HTTP biasa di HP tidak disarankan untuk pengujian GPS.
+Deploy ke Vercel
+Repository rafiakb/JEJAKRUN sudah dihubungkan dengan proyek Vercel jejakrun-website pada 28 Oktober 2026.
 
-## Hosting mudah (direkomendasikan Netlify Drop)
-- **Dari HP kamu bisa langsung unggah file `JejakRun_Web_Siap_Hosting.zip` tanpa ekstrak.**
-- Buka https://app.netlify.com/drop di Chrome Android.
-- Tekan **choose a file** / **pilih file**, lalu pilih ZIP yang baru diunduh. Netlify Drop mendukung ZIP dan memberi link publik HTTPS (mungkin perlu login jika ingin mengelola atau memperbarui website).
-- Buka URL tersebut dari Chrome Android; izinkan GPS saat menjalankan lari.
-- Chrome Android: menu **⋮ → Tambahkan ke layar utama / Install app**.
-
-## Alternatif: Vercel
-- Upload folder proyek ini ke GitHub (root berisi `index.html`), lalu Import Repository di Vercel sebagai situs statis. Framework preset: Other; output directory: kosong/default.
-- URL produksi Vercel menggunakan HTTPS.
-
-## Jalankan lokal
-Dengan Python: `cd JejakRun_Web && python -m http.server 8000`, lalu buka `http://localhost:8000` pada browser laptop (GPS localhost mungkin berasal dari PC, bukan HP).
-
-## Batasan
-- Tidak termasuk file APK.
-- Tidak menggunakan MySQL/XAMPP; website statis lebih praktis dan biaya hosting rendah.
-- Data kegiatan bersifat lokal, tanpa akun dan tanpa sync lintas perangkat.
-- PWA offline hanya untuk tampilan dasar setelah pernah dibuka; peta perlu internet.
-
-© 2026 JejakRun. Desain dan kode prototipe.
-JejakRun terhubung dengan GitHub dan Vercel.
+Alur pembaruan kode:
+1. Edit file melalui VS Code.
+2. Simpan perubahan, lalu lakukan Commit.
+3. Lakukan Push / Sync Changes ke branch main di GitHub.
+4. Periksa halaman Deployments proyek Vercel dan pastikan build terbaru berstatus Ready.
+Integrasi GitHub–Vercel sudah terhubung, tetapi pengujian auto-deploy dari commit terbaru masih perlu dipastikan. Perubahan README tidak mengubah fitur aplikasi.
+Struktur proyek
+JEJAKRUN/
+├── index.html
+├── styles.css
+├── app.js
+├── manifest.webmanifest
+├── sw.js
+├── icons/
+│   ├── icon.svg
+│   ├── icon-192.png
+│   └── icon-512.png
+├── netlify.toml
+└── README.md
+Batasan versi saat ini
+- Belum ada login akun atau database online. Riwayat disimpan menggunakan localStorage pada browser/perangkat masing-masing dan belum tersinkronisasi antara HP dan laptop.
+- Menghapus data situs, menggunakan mode privat, atau berpindah browser dapat menyebabkan riwayat tidak tersedia. Ekspor JSON secara berkala untuk cadangan.
+- Pelacakan GPS ketika layar terkunci atau browser berada di latar belakang tidak dijamin pada versi web.
+- Akurasi GPS bergantung pada perangkat, kondisi sinyal, dan lingkungan sekitar.
+- Peta OpenStreetMap memerlukan internet untuk memuat ubin peta; sebagian antarmuka PWA dapat tersedia setelah pernah dibuka.
+- Ini adalah proyek prototipe, bukan aplikasi navigasi atau perangkat keselamatan.
+Rencana pengembangan
+- [ ] Login dan registrasi pengguna.
+- [ ] Sinkronisasi riwayat lari dengan database online (misalnya Supabase).
+- [ ] Pengujian GPS langsung pada beberapa HP Android.
+- [ ] Peningkatan ketahanan pelacakan saat layar terkunci melalui aplikasi Android native bila diperlukan.
+© 2026 JejakRun. Proyek prototipe GPS running tracker.

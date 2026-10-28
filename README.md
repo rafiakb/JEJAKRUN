@@ -41,3 +41,4 @@ Dengan Python: `cd JejakRun_Web && python -m http.server 8000`, lalu buka `http:
 - PWA offline hanya untuk tampilan dasar setelah pernah dibuka; peta perlu internet.
 
 © 2026 JejakRun. Desain dan kode prototipe.
+JejakRun terhubung dengan GitHub dan Vercel.
